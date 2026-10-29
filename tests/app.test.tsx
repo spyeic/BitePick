@@ -41,7 +41,8 @@ describe('complete food management', () => {
     await user.clear(within(dialog).getByLabelText('Food name'));
     await user.type(within(dialog).getByLabelText('Food name'), 'Dumplings with friends');
     await user.click(within(dialog).getByRole('button', { name: 'Use 🥟' }));
-    await user.selectOptions(within(dialog).getByLabelText('Category'), 'Asian');
+    await user.click(within(dialog).getByRole('combobox', { name: 'Category' }));
+    await user.click(await screen.findByRole('option', { name: 'Asian' }));
     await user.click(within(dialog).getByRole('button', { name: 'Save changes' }));
     await user.click(screen.getByRole('switch', { name: 'Enable Dumplings with friends' }));
     expect(saved().foods.at(-1)).toMatchObject({ name: 'Dumplings with friends', emoji: '🥟', category: 'Asian', enabled: false });
@@ -162,7 +163,7 @@ describe('Chinese-first localization', () => {
     expect(screen.queryByRole('heading', { name: '粤菜' })).not.toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: '编辑 湘菜' }));
     const dialog = screen.getByRole('dialog'); expect(within(dialog).getByLabelText('美食名称')).toHaveValue('湘菜');
-    expect(within(dialog).getByLabelText('分类')).toHaveValue('Asian');
+    expect(within(dialog).getByRole('combobox', { name: '分类' })).toHaveTextContent('亚洲美食');
     await user.click(within(dialog).getByRole('button', { name: '保存修改' }));
     expect(saved().foods[0].name).toBe('Hunan Cuisine'); expect(saved().foods[0].category).toBe('Asian');
     await user.click(screen.getByRole('button', { name: '切换到英文' }));
@@ -191,12 +192,13 @@ describe('Chinese-first localization', () => {
   it('localizes import errors and supports language selection in Settings', async () => {
     const user = userEvent.setup(); render(<AppShell />);
     await user.click(screen.getAllByRole('button', { name: '设置' })[0]);
-    expect(screen.getByLabelText('选择界面语言')).toHaveValue('zh');
+    expect(screen.getByRole('combobox', { name: '选择界面语言' })).toHaveTextContent('简体中文');
     const file = new File(['bad'], 'bad.json', { type: 'application/json' });
     Object.defineProperty(file, 'text', { value: async () => 'bad' });
     fireEvent.change(screen.getByLabelText('导入 BitePick JSON 文件'), { target: { files: [file] } });
     await screen.findByText('文件不是有效的 JSON，请选择 BitePick 导出的文件。');
-    await user.selectOptions(screen.getByLabelText('选择界面语言'), 'en');
+    await user.click(screen.getByRole('combobox', { name: '选择界面语言' }));
+    await user.click(await screen.findByRole('option', { name: 'English' }));
     expect(screen.getByText('This file is not valid JSON. Please choose a BitePick export.')).toBeInTheDocument();
     expect(saved().settings.language).toBe('en');
   });

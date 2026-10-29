@@ -7,6 +7,7 @@ import { EMOJIS } from '@/lib/defaults';
 import type { AppData, Food } from '@/lib/types';
 import { Dialog } from './ui/dialog';
 import { Button } from './ui/button';
+import { GlassSelect } from './ui/glass-select';
 export function FoodEditor({ food, data, onClose, onSave }: { food: Food | 'new'; data: AppData; onClose: () => void; onSave: (food: Food) => void }) {
   const { t, foodName, categoryName } = useLocale();
   const editing = food !== 'new';
@@ -25,7 +26,7 @@ export function FoodEditor({ food, data, onClose, onSave }: { food: Food | 'new'
   return <Dialog open onOpenChange={open => { if (!open) onClose(); }} title={editing ? t("A little menu makeover.") : t("What are you craving?")} description={editing ? t("Make this favorite feel like yours.") : t("Your favorite restaurant, a comfort food, anything delicious.")}>
     <form onSubmit={submit} className="food-form"><div className="food-preview"><span>{emoji || '🍽️'}</span><div><strong>{name || t("Your next favorite")}</strong><p>{categoryName(category)}</p></div></div>
       <label className="field-label">{t("Food name")}<input autoFocus required maxLength={60} value={name} onChange={e => { setName(e.target.value); setError(''); }} placeholder={t("e.g. Friday-night dumplings")} /></label>
-      <div className="form-two-columns"><label className="field-label">{t("Emoji")}<input aria-label={t("Food emoji")} required maxLength={20} value={emoji} onChange={e => setEmoji(e.target.value)} /></label><label className="field-label">{t("Category")}<select value={category} onChange={e => setCategory(e.target.value)}>{(data.categories.length ? data.categories : ['Custom']).map(cat => <option key={cat} value={cat}>{categoryName(cat)}</option>)}</select></label></div>
+      <div className="form-two-columns"><label className="field-label">{t("Emoji")}<input aria-label={t("Food emoji")} required maxLength={20} value={emoji} onChange={e => setEmoji(e.target.value)} /></label><label className="field-label">{t("Category")}<GlassSelect label={t("Category")} value={category} onValueChange={setCategory} options={(data.categories.length ? data.categories : ['Custom']).map(cat => ({ value: cat, label: categoryName(cat) }))} /></label></div>
       <div><p className="field-label emoji-label">{t("Pick a little personality")}</p><div className="emoji-grid">{EMOJIS.map(item => <button type="button" key={item} className={emoji === item ? 'selected' : ''} aria-label={t("Use {emoji}", { emoji: item })} aria-pressed={emoji === item} onClick={() => setEmoji(item)}>{item}</button>)}</div></div>
       {error && <p className="form-error" role="alert">{error}</p>}
       <div className="dialog-actions"><Button type="button" variant="secondary" onClick={onClose}>{t("Cancel")}</Button><Button type="submit">{editing ? <Check size={17} /> : <Plus size={17} />}{editing ? t("Save changes") : t("Add to my menu")}</Button></div>

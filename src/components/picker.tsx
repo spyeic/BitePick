@@ -2,7 +2,7 @@
 import { useLocale } from '@/components/locale-provider';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useReducedMotion } from 'motion/react';
-import { ArrowRight, ArrowUpRight, Check, ChevronDown, CircleHelp, Clock3, Dices, Heart, ListFilter, Plus, RotateCcw, Shuffle, Sparkles, Utensils, Zap } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, Check, CircleHelp, Clock3, Dices, Heart, ListFilter, Plus, RotateCcw, Shuffle, Sparkles, Utensils, Zap } from 'lucide-react';
 import { toast } from 'sonner';
 import { eligibleFoods, pickFood, wheelGroups, winningRotation } from '@/lib/random';
 import { dateLabel } from '@/lib/utils';
@@ -86,7 +86,7 @@ export function Picker({ data, update, onManage, onAdd, onHistory, onBusyChange 
             <p aria-live="polite">{spinning ? t("A little suspense makes it taste better.") : candidates.length > 12 ? t("{count} foods in grouped slices. Same fair odds for every food.", { count: candidates.length }) : t("No wrong answers. Just good food.")}</p>
           </div>
         </> : <div className="picker-empty"><div className="empty-emoji">{data.foods.length ? '🥄' : '🍽️'}</div><h2>{data.foods.length ? t("A little too picky?") : t("Start with a craving.")}</h2><p>{data.foods.length ? t("No foods match right now. Adjust your filters, enable a few favorites, or bring back skipped picks.") : t("Add something you love. We’ll take care of the deciding.")}</p><Button onClick={() => { if (!data.foods.length) onAdd(); else { setCategory('all'); setExcluded([]); update(p => ({ ...p, settings: { ...p.settings, avoidRecent: 0 } })); if (!data.foods.some(f => f.enabled)) onManage(); } }}>{data.foods.length ? t("Adjust my menu") : t("Add my first food")}<ArrowRight size={16} /></Button></div>}
-        <div className="wheel-bottom"><label className="avoid-control"><Clock3 size={15} /><span>{t("Avoid recent picks")}</span><span className="select-wrap"><select aria-label={t("Avoid recent picks")} value={data.settings.avoidRecent} disabled={spinning} onChange={e => update(p => ({ ...p, settings: { ...p.settings, avoidRecent: Number(e.target.value) as Settings['avoidRecent'] } }))}><option value={0}>{t("Off")}</option><option value={1}>{t("Last 1")}</option><option value={3}>{t("Last 3")}</option><option value={5}>{t("Last 5")}</option></select><ChevronDown size={13} /></span></label>
+        <div className="wheel-bottom"><label className="avoid-control"><Clock3 size={15} /><span>{t("Avoid recent picks")}</span><GlassSelect className="glass-field glass-field-compact" label={t("Avoid recent picks")} value={String(data.settings.avoidRecent)} disabled={spinning} onValueChange={value => update(p => ({ ...p, settings: { ...p.settings, avoidRecent: Number(value) as Settings['avoidRecent'] } }))} options={[{ value: '0', label: t("Off") }, { value: '1', label: t("Last 1") }, { value: '3', label: t("Last 3") }, { value: '5', label: t("Last 5") }]} /></label>
           <Tooltip label={reducedMotion ? t("Reduced motion is on. Change it in Settings.") : t("You can turn off animations in Settings.")}><button className="icon-button" aria-label={t("Animation preferences")}><Sparkles size={15} /></button></Tooltip>
         </div>
       </div>

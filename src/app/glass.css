@@ -117,6 +117,22 @@ body::after {
 @keyframes glass-pop-in { from { opacity: 0; transform: scale(.92) translateY(-6px); } to { opacity: 1; transform: none; } }
 @keyframes glass-pop-out { to { opacity: 0; transform: scale(.96); } }
 .glass-select-viewport { scrollbar-width: thin; }
+.glass-field {
+  display: flex; align-items: center; gap: 6px; min-height: 42px; padding: 0 12px; color: var(--muted); font-size: 13px;
+  border: 1px solid var(--glass-border); border-radius: 12px; background: var(--surface);
+  box-shadow: inset 0 1px 0 var(--glass-edge), 0 2px 8px rgba(122, 70, 40, .05);
+}
+.glass-field:hover:not(:disabled) { background: var(--surface-hover); }
+.glass-field .glass-select-value { padding: 0; font-size: inherit; }
+.glass-field-compact { width: auto; min-height: 30px; margin-left: 3px; padding: 0 7px 0 10px; border-radius: 9px; font-size: 10px; gap: 4px; }
+.glass-field-inline { width: auto; flex-shrink: 0; min-width: 132px; min-height: 36px; font-size: 11px; }
+.glass-field-emoji { width: 66px; flex-shrink: 0; min-height: 40px; padding: 0 6px 0 10px; font-size: 22px; gap: 2px; }
+.glass-field-emoji .glass-select-value { text-align: center; overflow: visible; }
+.emoji-menu { min-width: 0; }
+.emoji-menu .glass-select-viewport { display: grid; grid-template-columns: repeat(7, 40px); gap: 3px; }
+.emoji-menu .glass-select-item { justify-content: center; padding: 6px 0; font-size: 22px; }
+.emoji-menu .glass-select-check { display: none; }
+.emoji-menu .glass-select-item[data-state="checked"] { background: var(--accent-soft); box-shadow: inset 0 0 0 1px rgba(207, 89, 53, .35); }
 .glass-select-item { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 9px 12px; border-radius: 12px; font-size: 12px; color: var(--ink); cursor: pointer; outline: none; user-select: none; transition: background .15s ease, box-shadow .15s ease; }
 .glass-select-item[data-highlighted] { background: linear-gradient(140deg, var(--glass-strong), var(--accent-soft)); box-shadow: inset 0 1px 0 var(--glass-edge), 0 2px 8px rgba(207, 89, 53, .1); }
 .glass-select-item[data-state="checked"] { color: var(--accent); font-weight: 600; }
