@@ -1,0 +1,136 @@
+/* Liquid glass theme: loaded after globals.css and only overrides visual properties. */
+:root {
+  --background: #fdf0e4;
+  --sidebar: transparent;
+  --surface: rgba(255, 255, 255, .55);
+  --surface-soft: rgba(255, 255, 255, .32);
+  --surface-hover: rgba(255, 255, 255, .62);
+  --line: rgba(122, 84, 58, .12);
+  --accent-soft: rgba(255, 196, 168, .42);
+  --green-soft: rgba(196, 226, 178, .4);
+  --glass: rgba(255, 255, 255, .28);
+  --glass-strong: rgba(255, 255, 255, .58);
+  --glass-border: rgba(255, 255, 255, .72);
+  --glass-edge: rgba(255, 255, 255, .95);
+  --glass-shadow: 0 12px 40px rgba(122, 70, 40, .13), 0 2px 6px rgba(122, 70, 40, .06);
+  --glass-blur: blur(24px) saturate(185%);
+  --blob-a: #ff8a5c;
+  --blob-b: #ffc86b;
+  --blob-c: #7fdcb8;
+  --blob-d: #b3a2ff;
+  --shadow: var(--glass-shadow);
+}
+:root[data-theme="dark"] {
+  --background: #14151b;
+  --surface: rgba(255, 255, 255, .07);
+  --surface-soft: rgba(255, 255, 255, .04);
+  --surface-hover: rgba(255, 255, 255, .12);
+  --line: rgba(255, 255, 255, .09);
+  --accent-soft: rgba(244, 160, 125, .16);
+  --green-soft: rgba(175, 189, 151, .14);
+  --glass: rgba(34, 36, 46, .32);
+  --glass-strong: rgba(48, 50, 62, .55);
+  --glass-border: rgba(255, 255, 255, .13);
+  --glass-edge: rgba(255, 255, 255, .22);
+  --glass-shadow: 0 16px 48px rgba(0, 0, 0, .38), 0 2px 6px rgba(0, 0, 0, .22);
+  --blob-a: #8a3d2c;
+  --blob-b: #6b4a1f;
+  --blob-c: #1f5a55;
+  --blob-d: #46337a;
+}
+
+/* Backdrop: soft color fields the glass refracts. */
+body { background: var(--background); min-height: 100dvh; }
+body::before, body::after { content: ''; position: fixed; inset: -20vmax; z-index: -1; pointer-events: none; filter: blur(40px); }
+body::before {
+  background:
+    radial-gradient(38vmax 34vmax at 18% 22%, var(--blob-a), transparent 70%),
+    radial-gradient(34vmax 30vmax at 82% 18%, var(--blob-d), transparent 70%);
+  opacity: .85; animation: glass-drift 28s ease-in-out infinite alternate;
+}
+body::after {
+  background:
+    radial-gradient(36vmax 32vmax at 75% 82%, var(--blob-c), transparent 70%),
+    radial-gradient(30vmax 28vmax at 28% 78%, var(--blob-b), transparent 70%);
+  opacity: .8; animation: glass-drift 34s ease-in-out infinite alternate-reverse;
+}
+:root[data-theme="dark"] body::before, :root[data-theme="dark"] body::after { opacity: .7; }
+@keyframes glass-drift { from { transform: translate3d(-3%, -2%, 0) scale(1); } to { transform: translate3d(3%, 3%, 0) scale(1.08); } }
+
+/* Glass surfaces */
+:root .sidebar, :root .decision-card, :root .recent-card, :root .food-card, :root .quick-add-bar,
+:root .history-stats, :root .history-list, :root .settings-card, :root .empty-state, :root .dialog-content,
+:root .mobile-nav, :root .quick-card, :root .sidebar-note, :root .recent-empty, :root .search-input {
+  background: linear-gradient(140deg, var(--glass-strong), var(--glass));
+  -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow), inset 0 1px 0 var(--glass-edge), inset 0 -1px 0 rgba(255, 255, 255, .12);
+}
+:root .sidebar { border-width: 0 1px 0 0; box-shadow: inset -1px 0 0 var(--glass-edge), 8px 0 40px rgba(122, 70, 40, .06); }
+:root .mobile-nav { border-width: 1px 0 0; }
+:root .empty-state { border-style: dashed; }
+:root .sidebar-note, :root .recent-card, :root .search-input { box-shadow: 0 4px 16px rgba(122, 70, 40, .07), inset 0 1px 0 var(--glass-edge); }
+:root .decision-card { border-radius: 26px; }
+:root .food-card { border-radius: 20px; }
+:root .food-card:hover { box-shadow: 0 18px 44px rgba(122, 70, 40, .18), inset 0 1px 0 var(--glass-edge); }
+:root .settings-card, :root .history-list, :root .history-stats { border-radius: 20px; }
+:root .dialog-content { border-radius: 26px; background: linear-gradient(140deg, var(--glass-strong), var(--glass)); }
+:root .result-dialog { background: linear-gradient(140deg, var(--glass-strong), var(--glass)); }
+:root .dialog-overlay { background: rgba(40, 30, 24, .18); -webkit-backdrop-filter: blur(10px) saturate(140%); backdrop-filter: blur(10px) saturate(140%); }
+:root[data-theme="dark"] .dialog-overlay { background: rgba(0, 0, 0, .35); }
+:root[data-theme="dark"] .sidebar { box-shadow: inset -1px 0 0 var(--glass-edge); }
+
+/* Inner panels sit on the card's glass instead of stacking another blur. */
+:root .topbar { border-bottom-color: var(--glass-border); }
+:root .wheel-panel { background: radial-gradient(ellipse at 50% 43%, rgba(255, 255, 255, .5) 0%, transparent 68%); }
+:root[data-theme="dark"] .wheel-panel { background: radial-gradient(ellipse at 50% 43%, rgba(255, 255, 255, .06) 0%, transparent 68%); }
+:root .menu-panel { background: rgba(255, 255, 255, .16); border-left-color: var(--glass-border); }
+:root[data-theme="dark"] .menu-panel { background: rgba(255, 255, 255, .03); }
+:root .theme-choice, :root .data-summary, :root .food-preview, :root .category-filter { background: var(--surface-soft); border-color: var(--glass-border); box-shadow: inset 0 1px 0 var(--glass-edge); }
+:root input:not([type="checkbox"]), :root select { background: var(--surface); border-color: var(--glass-border); box-shadow: inset 0 1px 2px rgba(122, 70, 40, .06); }
+:root[data-theme="dark"] input:not([type="checkbox"]), :root[data-theme="dark"] select { box-shadow: inset 0 1px 2px rgba(0, 0, 0, .25); }
+:root .tooltip { color: #fff; background: rgba(40, 36, 32, .78); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
+
+/* Navigation pills */
+:root .main-nav > button { border-radius: 14px; }
+:root .main-nav > button.active, :root .mobile-nav > button.active {
+  background: linear-gradient(140deg, var(--glass-strong), var(--accent-soft));
+  box-shadow: 0 4px 14px rgba(207, 89, 53, .12), inset 0 1px 0 var(--glass-edge);
+}
+:root .mode-switch, :root[data-theme="dark"] .mode-switch { background: var(--surface-soft); border-radius: 14px; box-shadow: inset 0 1px 3px rgba(122, 70, 40, .1), inset 0 -1px 0 var(--glass-edge); }
+:root .mode-switch button { border-radius: 11px; }
+:root .mode-switch button.active { background: var(--glass-strong); box-shadow: 0 3px 10px rgba(122, 70, 40, .12), inset 0 1px 0 var(--glass-edge); }
+
+/* Glossy buttons */
+:root .button { border-radius: 14px; }
+:root .button-primary, :root .pick-button {
+  color: #fffaf4; background: linear-gradient(180deg, #f39268 0%, #dc6238 100%);
+  box-shadow: 0 8px 22px rgba(220, 98, 56, .32), inset 0 1px 0 rgba(255, 255, 255, .5), inset 0 -3px 8px rgba(130, 36, 10, .22);
+}
+:root .button-primary:hover:not(:disabled), :root .pick-button:hover:not(:disabled) { background: linear-gradient(180deg, #f6a07a 0%, #e06a40 100%); box-shadow: 0 12px 28px rgba(220, 98, 56, .38), inset 0 1px 0 rgba(255, 255, 255, .55), inset 0 -3px 8px rgba(130, 36, 10, .2); }
+:root .pick-button { border-radius: 18px; }
+:root .button-secondary { background: var(--surface); border-color: var(--glass-border); box-shadow: 0 2px 8px rgba(122, 70, 40, .06), inset 0 1px 0 var(--glass-edge); }
+:root .button-secondary:hover:not(:disabled) { background: var(--surface-hover); border-color: var(--glass-border); }
+:root .brand-mark { background: linear-gradient(160deg, #f6a07a, #dc6238); box-shadow: 0 6px 16px rgba(220, 98, 56, .3), inset 0 1px 0 rgba(255, 255, 255, .55); }
+
+/* Emoji bubbles */
+:root .food-emoji, :root .food-card-emoji, :root .result-emoji {
+  background: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, .9), rgba(255, 255, 255, .35) 70%);
+  box-shadow: 0 4px 12px rgba(122, 70, 40, .1), inset 0 1px 0 #fff, inset 0 -2px 6px rgba(122, 70, 40, .06);
+}
+:root[data-theme="dark"] .food-emoji, :root[data-theme="dark"] .food-card-emoji, :root[data-theme="dark"] .result-emoji {
+  background: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, .2), rgba(255, 255, 255, .05) 70%);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, .25), inset 0 1px 0 rgba(255, 255, 255, .2);
+}
+:root .food-emoji { border-radius: 14px; }
+
+/* On phones the sidebar is just the brand row over the top bar. */
+@media (max-width: 760px) {
+  :root .sidebar, :root[data-theme="dark"] .sidebar { background: transparent; border: 0; box-shadow: none; -webkit-backdrop-filter: none; backdrop-filter: none; }
+}
+
+/* Without backdrop-filter, keep text readable with denser panels. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  :root { --glass: rgba(255, 255, 255, .82); --glass-strong: rgba(255, 255, 255, .92); }
+  :root[data-theme="dark"] { --glass: rgba(34, 36, 46, .9); --glass-strong: rgba(44, 46, 58, .94); }
+}

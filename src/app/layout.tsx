@@ -6,6 +6,7 @@ import '@fontsource/dm-sans/latin-700.css';
 import '@fontsource/instrument-serif/latin-400.css';
 import '@fontsource/instrument-serif/latin-400-italic.css';
 import './globals.css';
+import './glass.css';
 export const metadata: Metadata = {
   title: 'BitePick — 今天吃什么？',
   description: '今天吃什么？让 BitePick 帮你决定。自定义美食菜单，转动转盘，轻松选出下一餐。无需登录，支持中英文。',
