@@ -184,6 +184,19 @@ body::after {
 /* On phones the sidebar is just the brand row over the top bar. */
 @media (max-width: 760px) {
   :root .sidebar, :root[data-theme="dark"] .sidebar { background: transparent; border: 0; box-shadow: none; -webkit-backdrop-filter: none; backdrop-filter: none; }
+  /* Edge to edge: the backdrop fills the status bar and toolbar areas, content stays inside the safe area. */
+  :root .sidebar { top: env(safe-area-inset-top); }
+  :root .topbar { height: calc(76px + env(safe-area-inset-top)); padding-top: env(safe-area-inset-top); }
+  :root .content { padding-bottom: calc(112px + env(safe-area-inset-bottom)); }
+  /* Floating tab bar, clear of the screen edges. */
+  :root .mobile-nav {
+    left: 14px; right: 14px; bottom: calc(10px + env(safe-area-inset-bottom));
+    padding: 6px; gap: 2px; border-width: 1px; border-radius: 26px;
+    box-shadow: 0 14px 40px rgba(122, 70, 40, .2), 0 2px 8px rgba(122, 70, 40, .08), inset 0 1px 0 var(--glass-edge), inset 0 -1px 0 rgba(255, 255, 255, .12);
+  }
+  :root[data-theme="dark"] .mobile-nav { box-shadow: 0 14px 40px rgba(0, 0, 0, .45), inset 0 1px 0 var(--glass-edge); }
+  :root .mobile-nav > button { flex: 1; min-width: 0; border-radius: 20px; padding: 8px 4px; }
+  :root .bite-toast { margin-bottom: calc(84px + env(safe-area-inset-bottom)) !important; }
 }
 
 /* Without backdrop-filter, keep text readable with denser panels. */
