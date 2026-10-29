@@ -98,6 +98,30 @@ body::after {
 :root .category-filter:has(select:focus-visible), :root .search-input:has(> input:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; }
 :root .tooltip { color: #fff; background: rgba(40, 36, 32, .78); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
 
+/* Glass select (Radix): the trigger keeps its wrapper's styles; the list is a floating glass panel. */
+:root { --menu-glass: linear-gradient(150deg, rgba(255, 255, 255, .78), rgba(255, 255, 255, .55)); --menu-shadow: 0 18px 50px rgba(122, 70, 40, .2), 0 3px 10px rgba(122, 70, 40, .08); }
+:root[data-theme="dark"] { --menu-glass: linear-gradient(150deg, rgba(52, 54, 66, .82), rgba(36, 38, 48, .7)); --menu-shadow: 0 18px 50px rgba(0, 0, 0, .5), 0 3px 10px rgba(0, 0, 0, .3); }
+.glass-select-trigger { width: 100%; text-align: left; }
+.glass-select-value { flex: 1; min-width: 0; padding: 11px 9px; font-size: 12px; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.glass-select-trigger > svg:last-child { transition: transform .35s cubic-bezier(.34, 1.56, .64, 1); }
+.glass-select-trigger[data-state="open"] > svg:last-child { transform: rotate(180deg); }
+.glass-select-content {
+  z-index: 70; min-width: var(--radix-select-trigger-width); max-height: min(320px, var(--radix-select-content-available-height)); overflow: hidden;
+  padding: 6px; border-radius: 18px; background: var(--menu-glass); border: 1px solid var(--glass-border);
+  -webkit-backdrop-filter: blur(28px) saturate(190%); backdrop-filter: blur(28px) saturate(190%);
+  box-shadow: var(--menu-shadow), inset 0 1px 0 var(--glass-edge);
+  transform-origin: var(--radix-select-content-transform-origin);
+}
+.glass-select-content[data-state="open"] { animation: glass-pop-in .34s cubic-bezier(.34, 1.4, .64, 1); }
+.glass-select-content[data-state="closed"] { animation: glass-pop-out .14s ease-in forwards; }
+@keyframes glass-pop-in { from { opacity: 0; transform: scale(.92) translateY(-6px); } to { opacity: 1; transform: none; } }
+@keyframes glass-pop-out { to { opacity: 0; transform: scale(.96); } }
+.glass-select-viewport { scrollbar-width: thin; }
+.glass-select-item { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 9px 12px; border-radius: 12px; font-size: 12px; color: var(--ink); cursor: pointer; outline: none; user-select: none; transition: background .15s ease, box-shadow .15s ease; }
+.glass-select-item[data-highlighted] { background: linear-gradient(140deg, var(--glass-strong), var(--accent-soft)); box-shadow: inset 0 1px 0 var(--glass-edge), 0 2px 8px rgba(207, 89, 53, .1); }
+.glass-select-item[data-state="checked"] { color: var(--accent); font-weight: 600; }
+.glass-select-check { display: inline-flex; }
+
 /* Navigation pills: the active highlight is a GlassPill that springs between buttons. */
 :root .main-nav > button { border-radius: 14px; }
 :root .mode-switch, :root[data-theme="dark"] .mode-switch { background: var(--surface-soft); border-radius: 14px; box-shadow: inset 0 1px 3px rgba(122, 70, 40, .1), inset 0 -1px 0 var(--glass-edge); }

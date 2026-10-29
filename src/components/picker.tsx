@@ -11,6 +11,7 @@ import { Button } from './ui/button';
 import { Switch } from './ui/switch';
 import { Tooltip } from './ui/tooltip';
 import { GlassPill } from './ui/glass-pill';
+import { GlassSelect } from './ui/glass-select';
 import { Wheel } from './wheel';
 import { QuickPick } from './quick-pick';
 import { ResultDialog } from './result-dialog';
@@ -90,7 +91,7 @@ export function Picker({ data, update, onManage, onAdd, onHistory, onBusyChange 
         </div>
       </div>
       <aside className="menu-panel"><div className="menu-heading"><div><span className="section-kicker">{t("YOUR FAVORITES, YOUR RULES")}</span><h2>{t("On the menu")} <span>{data.foods.length}</span></h2></div><Tooltip label={t("Manage your food list")}><button className="icon-button" aria-label={t("Manage food list")} onClick={onManage} disabled={spinning}><ArrowUpRight size={20} /></button></Tooltip></div>
-        <div className="category-filter"><ListFilter size={15} /><select aria-label={t("Filter wheel by category")} value={activeCategory} disabled={spinning} onChange={e => setCategory(e.target.value)}><option value="all">{t("All cravings")}</option>{activeCategories.map(cat => <option key={cat} value={cat}>{categoryName(cat)}</option>)}</select><ChevronDown size={15} /></div>
+        <GlassSelect className="category-filter" icon={<ListFilter size={15} />} label={t("Filter wheel by category")} value={activeCategory} disabled={spinning} onValueChange={setCategory} options={[{ value: 'all', label: t("All cravings") }, ...activeCategories.map(cat => ({ value: cat, label: categoryName(cat) }))]} />
         <div className="menu-scroll">{menu.length ? menu.map((food, index) => {
           const available = candidates.some(f => f.id === food.id);
           const reason = excluded.includes(food.id) ? t("Skipped this round") : food.enabled && !available ? t("Recently picked") : categoryName(food.category);
