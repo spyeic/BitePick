@@ -89,6 +89,13 @@ body::after {
 :root .theme-choice, :root .data-summary, :root .food-preview, :root .category-filter { background: var(--surface-soft); border-color: var(--glass-border); box-shadow: inset 0 1px 0 var(--glass-edge); }
 :root input:not([type="checkbox"]), :root select { background: var(--surface); border-color: var(--glass-border); box-shadow: inset 0 1px 2px rgba(122, 70, 40, .06); }
 :root[data-theme="dark"] input:not([type="checkbox"]), :root[data-theme="dark"] select { box-shadow: inset 0 1px 2px rgba(0, 0, 0, .25); }
+/* Controls inside a glass wrapper are part of that surface, not a second box. */
+:root .category-filter select, :root .search-input > input, :root .quick-add-bar > input,
+:root[data-theme="dark"] .category-filter select, :root[data-theme="dark"] .search-input > input, :root[data-theme="dark"] .quick-add-bar > input { background: transparent; border: 0; box-shadow: none; }
+:root .category-filter { background: linear-gradient(140deg, var(--glass-strong), var(--glass)); border-radius: 14px; box-shadow: 0 4px 14px rgba(122, 70, 40, .08), inset 0 1px 0 var(--glass-edge); }
+:root .category-filter:hover { background: linear-gradient(140deg, var(--surface-hover), var(--glass-strong)); }
+:root .category-filter select:focus-visible, :root .search-input > input:focus-visible { outline: none; }
+:root .category-filter:has(select:focus-visible), :root .search-input:has(> input:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; }
 :root .tooltip { color: #fff; background: rgba(40, 36, 32, .78); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
 
 /* Navigation pills: the active highlight is a GlassPill that springs between buttons. */
