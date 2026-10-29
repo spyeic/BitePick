@@ -10,6 +10,7 @@ import type { AppData, Food, PickMode, Settings } from '@/lib/types';
 import { Button } from './ui/button';
 import { Switch } from './ui/switch';
 import { Tooltip } from './ui/tooltip';
+import { GlassPill } from './ui/glass-pill';
 import { Wheel } from './wheel';
 import { QuickPick } from './quick-pick';
 import { ResultDialog } from './result-dialog';
@@ -73,8 +74,8 @@ export function Picker({ data, update, onManage, onAdd, onHistory, onBusyChange 
       <p>{t("Too many choices? Let BitePick decide.")}</p>
     </section>
     <div className="picker-toolbar"><div className="mode-switch" aria-label={t("Selection mode")}>
-      <button className={mode === 'wheel' ? 'active' : ''} aria-pressed={mode === 'wheel'} disabled={spinning} onClick={() => setMode('wheel')}><Dices size={17} /> {t("Spin the Wheel")}</button>
-      <button className={mode === 'quick' ? 'active' : ''} aria-pressed={mode === 'quick'} disabled={spinning} onClick={() => setMode('quick')}><Zap size={17} /> {t("Quick Pick")}</button>
+      <button className={mode === 'wheel' ? 'active' : ''} aria-pressed={mode === 'wheel'} disabled={spinning} onClick={() => setMode('wheel')}>{mode === 'wheel' && <GlassPill id="mode-pill" radius={11} />}<Dices size={17} /> {t("Spin the Wheel")}</button>
+      <button className={mode === 'quick' ? 'active' : ''} aria-pressed={mode === 'quick'} disabled={spinning} onClick={() => setMode('quick')}>{mode === 'quick' && <GlassPill id="mode-pill" radius={11} />}<Zap size={17} /> {t("Quick Pick")}</button>
     </div><span className="little-note"><Sparkles size={14} /> {t("Let a little luck choose.")}</span></div>
     <section className="decision-card">
       <div className="wheel-panel"><div className="wheel-panel-top"><span className="live-label"><i /> {t("{count} delicious possibilities", { count: candidates.length })}</span><Tooltip label={t("Every eligible food has an equal chance of being picked.")}><button className="icon-button help-button" aria-label={t("How random selection works")}><CircleHelp size={17} /></button></Tooltip></div>

@@ -91,15 +91,25 @@ body::after {
 :root[data-theme="dark"] input:not([type="checkbox"]), :root[data-theme="dark"] select { box-shadow: inset 0 1px 2px rgba(0, 0, 0, .25); }
 :root .tooltip { color: #fff; background: rgba(40, 36, 32, .78); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
 
-/* Navigation pills */
+/* Navigation pills: the active highlight is a GlassPill that springs between buttons. */
 :root .main-nav > button { border-radius: 14px; }
-:root .main-nav > button.active, :root .mobile-nav > button.active {
-  background: linear-gradient(140deg, var(--glass-strong), var(--accent-soft));
-  box-shadow: 0 4px 14px rgba(207, 89, 53, .12), inset 0 1px 0 var(--glass-edge);
-}
 :root .mode-switch, :root[data-theme="dark"] .mode-switch { background: var(--surface-soft); border-radius: 14px; box-shadow: inset 0 1px 3px rgba(122, 70, 40, .1), inset 0 -1px 0 var(--glass-edge); }
 :root .mode-switch button { border-radius: 11px; }
-:root .mode-switch button.active { background: var(--glass-strong); box-shadow: 0 3px 10px rgba(122, 70, 40, .12), inset 0 1px 0 var(--glass-edge); }
+:root .main-nav > button, :root .mobile-nav > button, :root .mode-switch button, :root .category-tabs > button { position: relative; isolation: isolate; }
+:root .main-nav > button.active, :root .mobile-nav > button.active, :root .mode-switch button.active, :root .category-tabs > button.active { background: transparent; box-shadow: none; border-color: transparent; }
+.glass-pill {
+  position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background: linear-gradient(140deg, var(--glass-strong), var(--accent-soft));
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 4px 14px rgba(207, 89, 53, .14), inset 0 1px 0 var(--glass-edge), inset 0 -1px 2px rgba(255, 255, 255, .2);
+}
+.mode-switch .glass-pill { background: var(--glass-strong); box-shadow: 0 3px 10px rgba(122, 70, 40, .14), inset 0 1px 0 var(--glass-edge); }
+
+/* iOS-style switches: the thumb overshoots slightly and stretches while pressed. */
+:root .switch { transition: background-color .25s ease, border-color .25s ease; }
+:root .switch-thumb { transition: transform .45s cubic-bezier(.34, 1.56, .64, 1), width .2s ease; box-shadow: 0 2px 4px rgba(0, 0, 0, .18), inset 0 1px 0 #fff; }
+:root .switch:active:not(:disabled) .switch-thumb { width: 14px; }
+:root .switch:active:not(:disabled) .switch-thumb[data-state="checked"] { transform: translateX(8px); }
 
 /* Glossy buttons */
 :root .button { border-radius: 14px; }
