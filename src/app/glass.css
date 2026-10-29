@@ -181,6 +181,7 @@ body::after {
 }
 :root .food-emoji { border-radius: 14px; }
 
+.mobile-nav-dock { display: none; }
 /* On phones the sidebar is just the brand row over the top bar. */
 @media (max-width: 760px) {
   :root .sidebar, :root[data-theme="dark"] .sidebar { background: transparent; border: 0; box-shadow: none; -webkit-backdrop-filter: none; backdrop-filter: none; }
@@ -188,9 +189,11 @@ body::after {
   :root .sidebar { top: env(safe-area-inset-top); }
   :root .topbar { height: calc(76px + env(safe-area-inset-top)); padding-top: env(safe-area-inset-top); }
   :root .content { padding-bottom: calc(112px + env(safe-area-inset-bottom)); }
-  /* Floating tab bar, clear of the screen edges. */
+  /* Floating tab bar. The fixed dock is transparent and touches the bottom edge, so iOS Safari has no gap
+     under a fixed element to fill with an extended tint band; the glass bar floats inside it. */
+  :root .mobile-nav-dock { display: block; position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; padding: 0 14px calc(10px + env(safe-area-inset-bottom)); pointer-events: none; }
   :root .mobile-nav {
-    left: 14px; right: 14px; bottom: calc(10px + env(safe-area-inset-bottom));
+    position: relative; left: auto; right: auto; bottom: auto; pointer-events: auto;
     padding: 6px; gap: 2px; border-width: 1px; border-radius: 26px;
     box-shadow: 0 14px 40px rgba(122, 70, 40, .2), 0 2px 8px rgba(122, 70, 40, .08), inset 0 1px 0 var(--glass-edge), inset 0 -1px 0 rgba(255, 255, 255, .12);
   }
