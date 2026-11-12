@@ -47,3 +47,7 @@ tests/            Vitest unit and DOM tests
 ## Deploy
 
 Import into Vercel with the Next.js preset and Node.js 24. No environment variables needed.
+
+## Native iPhone app
+
+The SwiftUI implementation is in [`iOS/`](iOS/README.md). Open `iOS/BitePick.xcodeproj` with Xcode 26+ and run on iOS 26+. It includes native Liquid Glass controls, offline storage and web-compatible JSON import/export. See the native README for setup and validation status.

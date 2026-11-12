@@ -1,0 +1,43 @@
+// !$*UTF8*$!
+{ archiveVersion = 1; classes = {}; objectVersion = 56; objects = {
+17961F0DCF41F942E6EE2B25 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BitePickApp.swift"; sourceTree = "<group>"; };
+8C9E3B64805ACE3506FE714F = {isa = PBXBuildFile; fileRef = 17961F0DCF41F942E6EE2B25; };
+CB31C6E24A673359F7CC03D0 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Core/BiteStore.swift"; sourceTree = "<group>"; };
+3E5BCFE1AF54584364FACB07 = {isa = PBXBuildFile; fileRef = CB31C6E24A673359F7CC03D0; };
+90C3D800330EFFCCA9120A57 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Design/Style.swift"; sourceTree = "<group>"; };
+EC71D6E39A55D27D6D2D451B = {isa = PBXBuildFile; fileRef = 90C3D800330EFFCCA9120A57; };
+7B2E4248DDE0FDE71D27484C = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Features/CategoriesView.swift"; sourceTree = "<group>"; };
+3D03543A56B959BBE1580EE1 = {isa = PBXBuildFile; fileRef = 7B2E4248DDE0FDE71D27484C; };
+C6671363468583A775F6B6CD = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Features/FoodsView.swift"; sourceTree = "<group>"; };
+1CCC2D9DBDAECFD591769BE0 = {isa = PBXBuildFile; fileRef = C6671363468583A775F6B6CD; };
+21DD833FFC8953E6537B2BD1 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Features/HistoryView.swift"; sourceTree = "<group>"; };
+BF3D561DF1BC09BB65CBDC52 = {isa = PBXBuildFile; fileRef = 21DD833FFC8953E6537B2BD1; };
+B8218F45D493B3628FEEF7D1 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Features/PickView.swift"; sourceTree = "<group>"; };
+85CA577A9ECE7CF8B31A88BD = {isa = PBXBuildFile; fileRef = B8218F45D493B3628FEEF7D1; };
+2AA0C52D09718A402588BED5 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Features/SettingsView.swift"; sourceTree = "<group>"; };
+B1785E05919DCF5E3B695A4D = {isa = PBXBuildFile; fileRef = 2AA0C52D09718A402588BED5; };
+8E53ADC0FEC4552A7986EAC8 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Features/WheelView.swift"; sourceTree = "<group>"; };
+301BD9D385349DF4C858F62D = {isa = PBXBuildFile; fileRef = 8E53ADC0FEC4552A7986EAC8; };
+28AAD1477D5182D66D4B03B3 = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Assets.xcassets"; sourceTree = "<group>"; };
+993A6F0DC816349E9715E5C7 = {isa = PBXBuildFile; fileRef = 28AAD1477D5182D66D4B03B3; };
+26B2A637F7DC4079D5AB78A5 = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "PrivacyInfo.xcprivacy"; sourceTree = "<group>"; };
+4D41DD372D8E0FAD9BCA5A62 = {isa = PBXBuildFile; fileRef = 26B2A637F7DC4079D5AB78A5; };
+7D1043473D55BFA90E8530D3 = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BitePick.app; sourceTree = BUILT_PRODUCTS_DIR; };
+482182478A3ECD4745BEA917 = {isa = PBXGroup; children = (17961F0DCF41F942E6EE2B25, CB31C6E24A673359F7CC03D0, 90C3D800330EFFCCA9120A57, 7B2E4248DDE0FDE71D27484C, C6671363468583A775F6B6CD, 21DD833FFC8953E6537B2BD1, B8218F45D493B3628FEEF7D1, 2AA0C52D09718A402588BED5, 8E53ADC0FEC4552A7986EAC8, 28AAD1477D5182D66D4B03B3, 26B2A637F7DC4079D5AB78A5); path = BitePick; sourceTree = "<group>"; };
+BFE00B156DCFC34C4751A6E5 = {isa = PBXGroup; children = (7D1043473D55BFA90E8530D3); name = Products; sourceTree = "<group>"; };
+B28B7AF69320201D1CF206EB = {isa = PBXGroup; children = (482182478A3ECD4745BEA917, BFE00B156DCFC34C4751A6E5); sourceTree = "<group>"; };
+A01A5480379E97BD457D3185 = {isa = XCLocalSwiftPackageReference; relativePath = BitePickCore; };
+E23EF4DFD8458EBA92BF9064 = {isa = XCSwiftPackageProductDependency; package = A01A5480379E97BD457D3185; productName = BitePickCore; };
+1C25D3719CB905525B1D275B = {isa = PBXBuildFile; productRef = E23EF4DFD8458EBA92BF9064; };
+BCE16DD0260827ECF338C787 = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (8C9E3B64805ACE3506FE714F, 3E5BCFE1AF54584364FACB07, EC71D6E39A55D27D6D2D451B, 3D03543A56B959BBE1580EE1, 1CCC2D9DBDAECFD591769BE0, BF3D561DF1BC09BB65CBDC52, 85CA577A9ECE7CF8B31A88BD, B1785E05919DCF5E3B695A4D, 301BD9D385349DF4C858F62D); runOnlyForDeploymentPostprocessing = 0; };
+7561BFB015D8F536760CB671 = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (1C25D3719CB905525B1D275B); runOnlyForDeploymentPostprocessing = 0; };
+0189424A5A60FED329FA868E = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (993A6F0DC816349E9715E5C7, 4D41DD372D8E0FAD9BCA5A62); runOnlyForDeploymentPostprocessing = 0; };
+89E1FD6268CC0F221A2BE178 = {isa = XCBuildConfiguration; buildSettings = {CLANG_ENABLE_MODULES = YES; SDKROOT = iphoneos; IPHONEOS_DEPLOYMENT_TARGET = 26.0; SWIFT_VERSION = 6.0; SWIFT_OPTIMIZATION_LEVEL = "-Onone"; DEBUG_INFORMATION_FORMAT = dwarf; SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";}; name = Debug; };
+E6DE6C99132752C914FEF632 = {isa = XCBuildConfiguration; buildSettings = {CLANG_ENABLE_MODULES = YES; SDKROOT = iphoneos; IPHONEOS_DEPLOYMENT_TARGET = 26.0; SWIFT_VERSION = 6.0; SWIFT_COMPILATION_MODE = wholemodule; DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";}; name = Release; };
+862894B703A6DEDF96A9DD6C = {isa = XCConfigurationList; buildConfigurations = (89E1FD6268CC0F221A2BE178, E6DE6C99132752C914FEF632); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+7082CC0B6FC1282FCEABD07A = {isa = XCBuildConfiguration; buildSettings = {CLANG_ENABLE_MODULES = YES; SDKROOT = iphoneos; IPHONEOS_DEPLOYMENT_TARGET = 26.0; SWIFT_VERSION = 6.0; SWIFT_OPTIMIZATION_LEVEL = "-Onone"; DEBUG_INFORMATION_FORMAT = dwarf; SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)"; PRODUCT_BUNDLE_IDENTIFIER = com.bitepick.ios; PRODUCT_NAME = "$(TARGET_NAME)"; MARKETING_VERSION = 1.0; CURRENT_PROJECT_VERSION = 1; CODE_SIGN_STYLE = Automatic; GENERATE_INFOPLIST_FILE = YES; INFOPLIST_KEY_CFBundleDisplayName = BitePick; INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES; INFOPLIST_KEY_UILaunchScreen_Generation = YES; INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait; TARGETED_DEVICE_FAMILY = 1; ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon; SUPPORTED_PLATFORMS = "iphoneos iphonesimulator"; SUPPORTS_MACCATALYST = NO; SWIFT_EMIT_LOC_STRINGS = YES;}; name = Debug; };
+639A7CA24D39909E713B47F7 = {isa = XCBuildConfiguration; buildSettings = {CLANG_ENABLE_MODULES = YES; SDKROOT = iphoneos; IPHONEOS_DEPLOYMENT_TARGET = 26.0; SWIFT_VERSION = 6.0; SWIFT_COMPILATION_MODE = wholemodule; DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym"; PRODUCT_BUNDLE_IDENTIFIER = com.bitepick.ios; PRODUCT_NAME = "$(TARGET_NAME)"; MARKETING_VERSION = 1.0; CURRENT_PROJECT_VERSION = 1; CODE_SIGN_STYLE = Automatic; GENERATE_INFOPLIST_FILE = YES; INFOPLIST_KEY_CFBundleDisplayName = BitePick; INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES; INFOPLIST_KEY_UILaunchScreen_Generation = YES; INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait; TARGETED_DEVICE_FAMILY = 1; ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon; SUPPORTED_PLATFORMS = "iphoneos iphonesimulator"; SUPPORTS_MACCATALYST = NO; SWIFT_EMIT_LOC_STRINGS = YES;}; name = Release; };
+C57128001CE614BF8549D6BB = {isa = XCConfigurationList; buildConfigurations = (7082CC0B6FC1282FCEABD07A, 639A7CA24D39909E713B47F7); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+0E8A3AD980EC179856012B7E = {isa = PBXNativeTarget; buildConfigurationList = C57128001CE614BF8549D6BB; buildPhases = (BCE16DD0260827ECF338C787, 7561BFB015D8F536760CB671, 0189424A5A60FED329FA868E); buildRules = (); dependencies = (); name = BitePick; packageProductDependencies = (E23EF4DFD8458EBA92BF9064); productName = BitePick; productReference = 7D1043473D55BFA90E8530D3; productType = "com.apple.product-type.application"; };
+98F54143AB4E86B28C3AFEE0 = {isa = PBXProject; attributes = {BuildIndependentTargetsInParallel = YES; LastUpgradeCheck = 2600; TargetAttributes = {0E8A3AD980EC179856012B7E = {CreatedOnToolsVersion = 26.0; }; }; }; buildConfigurationList = 862894B703A6DEDF96A9DD6C; compatibilityVersion = "Xcode 14.0"; developmentRegion = zh-Hans; hasScannedForEncodings = 0; knownRegions = ("zh-Hans", en, Base); mainGroup = B28B7AF69320201D1CF206EB; packageReferences = (A01A5480379E97BD457D3185); productRefGroup = BFE00B156DCFC34C4751A6E5; projectDirPath = ""; projectRoot = ""; targets = (0E8A3AD980EC179856012B7E); };
+}; rootObject = 98F54143AB4E86B28C3AFEE0; }
