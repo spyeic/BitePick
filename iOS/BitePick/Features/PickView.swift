@@ -78,6 +78,8 @@ struct PickView: View {
                 }
             }.padding(.horizontal, 24).padding(.bottom, 30)
         }
+        .scrollIndicators(.hidden)
+        .scrollBounceBehavior(.basedOnSize)
         .bitePage().navigationTitle("BitePick").navigationBarTitleDisplayMode(.inline)
         .toolbar { ToolbarItem(placement: .topBarTrailing) {
             Menu {
