@@ -1,7 +1,7 @@
 'use client';
 import { useLocale } from '@/components/locale-provider';
 import { motion } from 'motion/react';
-import { ArrowRight, RotateCcw, Ban, Sparkles } from 'lucide-react';
+import { ArrowRight, RotateCcw, Ban } from 'lucide-react';
 import type { Food } from '@/lib/types';
 import { Dialog } from './ui/dialog';
 import { Button } from './ui/button';
@@ -9,8 +9,7 @@ export function ResultDialog({ food, onClose, onConfirm, onRetry, onExclude, red
   const { t, foodName, categoryName } = useLocale();
   return <Dialog open={!!food} onOpenChange={open => { if (!open) onClose(); }} title={t("Your next delicious decision")} description={t("A little less deciding. A little more enjoying.")} className="result-dialog">
     {food && <div className="result-inner">
-      <div className="result-eyebrow"><Sparkles size={15} /> {t("THE UNIVERSE HAS GOOD TASTE")}</div>
-      <motion.div className="result-emoji" initial={reducedMotion ? false : { scale: 0.6, rotate: -12 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: 'spring', stiffness: 220, damping: 15 }}><span>{food.emoji}</span><i className="confetti c1" /><i className="confetti c2" /><i className="confetti c3" /><i className="confetti c4" /></motion.div>
+      <motion.div className="result-emoji" initial={reducedMotion ? false : { opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.22 }}><span>{food.emoji}</span></motion.div>
       <p className="result-caption">{t("Today’s pick is…")}</p><h2>{foodName(food)}!</h2><span className="category-badge">{categoryName(food.category)}</span>
       <p className="result-note">{t("Decision made. Now for the good part.")}</p>
       <Button className="eat-button" onClick={onConfirm}>{t("Let’s Eat!")} <ArrowRight size={18} /></Button>

@@ -2,7 +2,7 @@
 import { useLocale } from '@/components/locale-provider';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useReducedMotion } from 'motion/react';
-import { ArrowRight, ArrowUpRight, Check, CircleHelp, Clock3, Dices, Heart, ListFilter, Plus, RotateCcw, Shuffle, Sparkles, Utensils, Zap } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, Check, CircleHelp, Clock3, Dices, ListFilter, Plus, RotateCcw, Shuffle, Sparkles, Utensils, Zap } from 'lucide-react';
 import { toast } from 'sonner';
 import { eligibleFoods, pickFood, wheelGroups, winningRotation } from '@/lib/random';
 import { dateLabel } from '@/lib/utils';
@@ -15,8 +15,8 @@ import { GlassSelect } from './ui/glass-select';
 import { Wheel } from './wheel';
 import { QuickPick } from './quick-pick';
 import { ResultDialog } from './result-dialog';
-interface Props { data: AppData; update: (updater: (data: AppData) => AppData) => void; onManage: () => void; onAdd: () => void; onHistory: () => void; onBusyChange: (busy: boolean) => void }
-export function Picker({ data, update, onManage, onAdd, onHistory, onBusyChange }: Props) {
+interface Props { data: AppData; update: (updater: (data: AppData) => AppData) => void; onManage: () => void; onAdd: () => void; onHistory: () => void; onSettings: () => void; onBusyChange: (busy: boolean) => void }
+export function Picker({ data, update, onManage, onAdd, onHistory, onSettings, onBusyChange }: Props) {
   const { t, foodName, categoryName, locale } = useLocale();
   const [mode, setMode] = useState<PickMode>('wheel');
   const [category, setCategory] = useState('all');
@@ -34,7 +34,7 @@ export function Picker({ data, update, onManage, onAdd, onHistory, onBusyChange 
   const candidates = useMemo(() => eligibleFoods(data.foods, data.history, data.settings.avoidRecent, activeCategory, excluded), [data, activeCategory, excluded]);
   const menu = data.foods.filter(food => activeCategory === 'all' || food.category === activeCategory);
   const activeCategories = data.categories.filter(cat => data.foods.some(food => food.category === cat));
-  useEffect(() => () => timers.current.forEach(clearTimeout), []);
+  useEffect(() => () => { timers.current.forEach(clearTimeout); onBusyChange(false); }, [onBusyChange]);
   const start = () => {
     if (busy.current || !candidates.length) return;
     const winner = pickFood(candidates);
@@ -70,14 +70,14 @@ export function Picker({ data, update, onManage, onAdd, onHistory, onBusyChange 
     toast(t("{name} is sitting this round out.", { name: foodName(removed) }), { action: { label: t("Undo"), onClick: () => setExcluded(previous => previous.filter(id => id !== removed.id)) } });
   };
   return <>
-    <section className="hero"><div className="eyebrow"><span /> {t("GOOD FOOD, LESS OVERTHINKING")}</div>
-      <h1>{t("What should we")}<br className="mobile-break" /> <em>{t("eat today?")}</em><span className="title-spark">✳</span></h1>
+    <section className="hero">
+      <h1>{t("What should we")}<br className="mobile-break" /> <em>{t("eat today?")}</em></h1>
       <p>{t("Too many choices? Let BitePick decide.")}</p>
     </section>
     <div className="picker-toolbar"><div className="mode-switch" aria-label={t("Selection mode")}>
       <button className={mode === 'wheel' ? 'active' : ''} aria-pressed={mode === 'wheel'} disabled={spinning} onClick={() => setMode('wheel')}>{mode === 'wheel' && <GlassPill id="mode-pill" radius={11} />}<Dices size={17} /> {t("Spin the Wheel")}</button>
       <button className={mode === 'quick' ? 'active' : ''} aria-pressed={mode === 'quick'} disabled={spinning} onClick={() => setMode('quick')}>{mode === 'quick' && <GlassPill id="mode-pill" radius={11} />}<Zap size={17} /> {t("Quick Pick")}</button>
-    </div><span className="little-note"><Sparkles size={14} /> {t("Let a little luck choose.")}</span></div>
+    </div></div>
     <section className="decision-card">
       <div className="wheel-panel"><div className="wheel-panel-top"><span className="live-label"><i /> {t("{count} delicious possibilities", { count: candidates.length })}</span><Tooltip label={t("Every eligible food has an equal chance of being picked.")}><button className="icon-button help-button" aria-label={t("How random selection works")}><CircleHelp size={17} /></button></Tooltip></div>
         {candidates.length ? <>
@@ -87,7 +87,7 @@ export function Picker({ data, update, onManage, onAdd, onHistory, onBusyChange 
           </div>
         </> : <div className="picker-empty"><div className="empty-emoji">{data.foods.length ? '🥄' : '🍽️'}</div><h2>{data.foods.length ? t("A little too picky?") : t("Start with a craving.")}</h2><p>{data.foods.length ? t("No foods match right now. Adjust your filters, enable a few favorites, or bring back skipped picks.") : t("Add something you love. We’ll take care of the deciding.")}</p><Button onClick={() => { if (!data.foods.length) onAdd(); else { setCategory('all'); setExcluded([]); update(p => ({ ...p, settings: { ...p.settings, avoidRecent: 0 } })); if (!data.foods.some(f => f.enabled)) onManage(); } }}>{data.foods.length ? t("Adjust my menu") : t("Add my first food")}<ArrowRight size={16} /></Button></div>}
         <div className="wheel-bottom"><label className="avoid-control"><Clock3 size={15} /><span>{t("Avoid recent picks")}</span><GlassSelect className="glass-field glass-field-compact" label={t("Avoid recent picks")} value={String(data.settings.avoidRecent)} disabled={spinning} onValueChange={value => update(p => ({ ...p, settings: { ...p.settings, avoidRecent: Number(value) as Settings['avoidRecent'] } }))} options={[{ value: '0', label: t("Off") }, { value: '1', label: t("Last 1") }, { value: '3', label: t("Last 3") }, { value: '5', label: t("Last 5") }]} /></label>
-          <Tooltip label={reducedMotion ? t("Reduced motion is on. Change it in Settings.") : t("You can turn off animations in Settings.")}><button className="icon-button" aria-label={t("Animation preferences")}><Sparkles size={15} /></button></Tooltip>
+          <Tooltip label={reducedMotion ? t("Reduced motion is on. Change it in Settings.") : t("You can turn off animations in Settings.")}><button className="icon-button" aria-label={t("Animation preferences")} onClick={onSettings} disabled={spinning}><Sparkles size={15} /></button></Tooltip>
         </div>
       </div>
       <aside className="menu-panel"><div className="menu-heading"><div><span className="section-kicker">{t("YOUR FAVORITES, YOUR RULES")}</span><h2>{t("On the menu")} <span>{data.foods.length}</span></h2></div><Tooltip label={t("Manage your food list")}><button className="icon-button" aria-label={t("Manage food list")} onClick={onManage} disabled={spinning}><ArrowUpRight size={20} /></button></Tooltip></div>
@@ -102,9 +102,9 @@ export function Picker({ data, update, onManage, onAdd, onHistory, onBusyChange 
       </aside>
     </section>
     <section className="recent-section"><div className="recent-header"><h2><Clock3 size={17} /> {t("Recently on your plate")}</h2><button className="text-button" onClick={onHistory} disabled={spinning}>{t("View history")} <ArrowRight size={14} /></button></div>
-      {data.history.length ? <div className="recent-grid">{data.history.slice(0, 3).map(entry => <div className="recent-card" key={entry.id}><span>{entry.emoji}</span><div><strong>{foodName(entry)}</strong><p>{categoryName(entry.category)} <i>·</i> {dateLabel(entry.pickedAt, locale)}</p></div><Heart size={15} /></div>)}</div> : <div className="recent-empty"><span>🍴</span><p>{t("Your food story starts with the first pick.")}<br /><span>{t("Confirm a choice, and we’ll save the memory here.")}</span></p><Heart size={18} /></div>}
+      {data.history.length ? <div className="recent-grid">{data.history.slice(0, 3).map(entry => <div className="recent-card" key={entry.id}><span>{entry.emoji}</span><div><strong>{foodName(entry)}</strong><p>{categoryName(entry.category)} <i>·</i> {dateLabel(entry.pickedAt, locale)}</p></div></div>)}</div> : <div className="recent-empty"><span>🍴</span><p>{t("Your food story starts with the first pick.")}<br /><span>{t("Confirm a choice, and we’ll save the memory here.")}</span></p></div>}
     </section>
-    <div className="page-signoff"><span>{t("Less debating.")}</span> {t("More delicious moments.")} <Heart size={12} /></div>
+
     <ResultDialog food={result} onClose={() => setResult(null)} onConfirm={confirm} onRetry={start} onExclude={removeForNow} reducedMotion={reducedMotion} />
   </>;
 }

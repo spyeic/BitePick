@@ -1,16 +1,49 @@
 // @vitest-environment jsdom
 import React, { StrictMode } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom/vitest';
 import { AppShell } from '../src/components/app-shell';
+import HomePage from '../src/app/(bitepick)/page';
+import FoodsPage from '../src/app/(bitepick)/foods/page';
+import HistoryPage from '../src/app/(bitepick)/history/page';
+import SettingsPage from '../src/app/(bitepick)/settings/page';
+import BitePickLayout from '../src/app/(bitepick)/layout';
 import { defaultData } from '../src/lib/defaults';
 import { STORAGE_KEY } from '../src/lib/storage';
 import type { AppData } from '../src/lib/types';
 
+// Route transitions are driven by the URL, including browser history events.
+vi.mock('next/navigation', async () => {
+  const { useSyncExternalStore } = await import('react');
+  return {
+    usePathname: () => useSyncExternalStore(listener => {
+      window.addEventListener('popstate', listener);
+      return () => window.removeEventListener('popstate', listener);
+    }, () => window.location.pathname),
+    useRouter: () => ({ push: (path: string) => {
+      window.history.pushState(null, '', path);
+      window.dispatchEvent(new PopStateEvent('popstate'));
+    } }),
+  };
+});
+vi.mock('next/link', () => ({ default: ({ href, onNavigate, children, ...props }: React.AnchorHTMLAttributes<HTMLAnchorElement> & { onNavigate?: (event: { preventDefault: () => void }) => void }) =>
+  <a {...props} href={href} onClick={event => {
+    if (event.ctrlKey || event.metaKey || event.shiftKey) return;
+    event.preventDefault();
+    let prevented = false;
+    onNavigate?.({ preventDefault: () => { prevented = true; } });
+    if (!prevented) {
+      window.history.pushState(null, '', href);
+      window.dispatchEvent(new PopStateEvent('popstate'));
+    }
+  }}>{children}</a>
+}));
+
 beforeEach(() => {
   window.localStorage.clear();
+  window.history.replaceState(null, '', '/');
   Object.defineProperty(window, 'matchMedia', { writable: true, value: vi.fn().mockImplementation((query: string) => ({ matches: false, media: query, onchange: null, addListener: vi.fn(), removeListener: vi.fn(), addEventListener: vi.fn(), removeEventListener: vi.fn(), dispatchEvent: vi.fn() })) });
   window.scrollTo = vi.fn();
   Element.prototype.scrollIntoView = vi.fn();
@@ -25,8 +58,8 @@ function seed(modify?: (data: AppData) => void) {
 }
 function saved(): AppData { return JSON.parse(window.localStorage.getItem(STORAGE_KEY)!); }
 async function openView(name: string, user: ReturnType<typeof userEvent.setup>) {
-  if (name === 'Settings') await user.click(screen.getAllByRole('button', { name: 'Settings' })[0]);
-  else await user.click(within(screen.getByRole('navigation', { name: 'Main navigation' })).getByRole('button', { name }));
+  if (name === 'Settings') await user.click(screen.getAllByRole('link', { name: 'Settings' })[0]);
+  else await user.click(within(screen.getByRole('navigation', { name: 'Main navigation' })).getByRole('link', { name }));
 }
 
 describe('complete food management', () => {
@@ -47,7 +80,7 @@ describe('complete food management', () => {
     await user.click(screen.getByRole('switch', { name: 'Enable Dumplings with friends' }));
     expect(saved().foods.at(-1)).toMatchObject({ name: 'Dumplings with friends', emoji: '🥟', category: 'Asian', enabled: false });
     app.unmount(); render(<AppShell />);
-    expect(screen.getByRole('switch', { name: 'Include Dumplings with friends' })).toHaveAttribute('data-state', 'unchecked');
+    expect(screen.getByRole('switch', { name: 'Enable Dumplings with friends' })).toHaveAttribute('data-state', 'unchecked');
   });
   it('requires confirmation for batch deletion and can restore the defaults', async () => {
     seed(); const user = userEvent.setup(); render(<AppShell />); await openView('My food list', user);
@@ -109,10 +142,47 @@ describe('picking and history', () => {
 });
 
 describe('settings and recovery', () => {
-  it('persists the theme and safely rejects an invalid import', async () => {
+  it.each(['light', 'dark'] as const)('switches to %s, persists it, and can return to system mode', async theme => {
+    seed(); const user = userEvent.setup();
+    const app = render(<AppShell />);
+    await user.click(screen.getByRole('button', { name: theme === 'light' ? 'Light' : 'Dark' }));
+    expect(document.documentElement.dataset.theme).toBe(theme);
+    expect(saved().settings.theme).toBe(theme);
+    app.unmount(); render(<AppShell />);
+    expect(document.documentElement.dataset.theme).toBe(theme);
+    expect(screen.getByRole('button', { name: theme === 'light' ? 'Light' : 'Dark' })).toHaveAttribute('aria-pressed', 'true');
+    await openView('Settings', user);
+    const groups = screen.getAllByRole('group', { name: 'Appearance' });
+    await user.click(within(groups[1]).getByRole('button', { name: 'System' }));
+    expect(saved().settings.theme).toBe('system');
+    expect(document.documentElement.dataset.theme).toBe('light');
+    expect(within(groups[0]).getByRole('button', { name: 'System' })).toHaveAttribute('aria-pressed', 'true');
+  });
+
+  it.each([true, false])('follows system appearance on load and live changes (dark: %s)', initiallyDark => {
+    seed(d => { d.settings.theme = 'system'; });
+    const listeners = new Set<() => void>();
+    const media = {
+      matches: initiallyDark, media: '(prefers-color-scheme: dark)', onchange: null,
+      addEventListener: vi.fn((_event: string, listener: () => void) => listeners.add(listener)),
+      removeEventListener: vi.fn((_event: string, listener: () => void) => listeners.delete(listener)),
+      addListener: vi.fn(), removeListener: vi.fn(), dispatchEvent: vi.fn(),
+    };
+    vi.mocked(window.matchMedia).mockImplementation(query => query === media.media ? media as unknown as MediaQueryList : ({ ...media, matches: false, addEventListener: vi.fn(), removeEventListener: vi.fn() } as unknown as MediaQueryList));
+    const app = render(<AppShell />);
+    expect(document.documentElement.dataset.theme).toBe(initiallyDark ? 'dark' : 'light');
+    act(() => { media.matches = !initiallyDark; listeners.forEach(listener => listener()); });
+    expect(document.documentElement.dataset.theme).toBe(initiallyDark ? 'light' : 'dark');
+    const darkButton = screen.getByRole('button', { name: 'Dark' });
+    fireEvent.click(darkButton);
+    act(() => { media.matches = false; listeners.forEach(listener => listener()); });
+    expect(document.documentElement.dataset.theme).toBe('dark');
+    app.unmount();
+    expect(listeners.size).toBe(0);
+  });
+  it('shows automatic appearance and safely rejects an invalid import', async () => {
     seed(); const user = userEvent.setup(); render(<AppShell />); await openView('Settings', user);
-    await user.click(screen.getByRole('button', { name: 'After hours' }));
-    expect(saved().settings.theme).toBe('dark'); expect(document.documentElement.dataset.theme).toBe('dark');
+    expect(screen.getByRole('heading', { name: 'Appearance' })).toBeInTheDocument();
     const file = new File(['not json'], 'broken.json', { type: 'application/json' });
     Object.defineProperty(file, 'text', { value: async () => 'not json' });
     fireEvent.change(screen.getByLabelText('Import BitePick JSON'), { target: { files: [file] } });
@@ -157,7 +227,7 @@ describe('Chinese-first localization', () => {
     await user.click(screen.getByRole('combobox', { name: '按分类筛选转盘候选项' }));
     await user.click(await screen.findByRole('option', { name: '亚洲美食' }));
     expect(screen.getByRole('img', { name: '美食转盘，共 9 个候选项' })).toBeInTheDocument();
-    await user.click(within(screen.getByRole('navigation', { name: '主导航' })).getByRole('button', { name: '我的美食清单' }));
+    await user.click(within(screen.getByRole('navigation', { name: '主导航' })).getByRole('link', { name: '我的美食清单' }));
     await user.type(screen.getByLabelText('搜索美食'), '湘菜');
     expect(screen.getByRole('heading', { name: '湘菜' })).toBeInTheDocument();
     expect(screen.queryByRole('heading', { name: '粤菜' })).not.toBeInTheDocument();
@@ -181,7 +251,7 @@ describe('Chinese-first localization', () => {
     const dialog = await screen.findByRole('dialog');
     expect(within(dialog).getByRole('heading', { name: '奶奶的饺子!' })).toBeInTheDocument();
     await user.click(within(dialog).getByRole('button', { name: '就吃这个！' }));
-    await user.click(within(screen.getByRole('navigation', { name: '主导航' })).getByRole('button', { name: '选择记录' }));
+    await user.click(within(screen.getByRole('navigation', { name: '主导航' })).getByRole('link', { name: '选择记录' }));
     const heading = new Intl.DateTimeFormat('zh-CN', { month: 'long', day: 'numeric', year: 'numeric' }).format(new Date(saved().history[0].pickedAt));
     expect(screen.getByRole('heading', { name: heading + '1 次选择' })).toBeInTheDocument();
     const history = saved().history;
@@ -191,7 +261,7 @@ describe('Chinese-first localization', () => {
   });
   it('localizes import errors and supports language selection in Settings', async () => {
     const user = userEvent.setup(); render(<AppShell />);
-    await user.click(screen.getAllByRole('button', { name: '设置' })[0]);
+    await user.click(screen.getAllByRole('link', { name: '设置' })[0]);
     expect(screen.getByRole('combobox', { name: '选择界面语言' })).toHaveTextContent('简体中文');
     const file = new File(['bad'], 'bad.json', { type: 'application/json' });
     Object.defineProperty(file, 'text', { value: async () => 'bad' });
@@ -201,5 +271,49 @@ describe('Chinese-first localization', () => {
     await user.click(await screen.findByRole('option', { name: 'English' }));
     expect(screen.getByText('This file is not valid JSON. Please choose a BitePick export.')).toBeInTheDocument();
     expect(saved().settings.language).toBe('en');
+  });
+});
+
+
+describe('page URLs', () => {
+  it.each([
+    ['/', HomePage], ['/foods', FoodsPage], ['/history', HistoryPage], ['/settings', SettingsPage],
+  ] as const)('renders the real %s route component inside its shared layout', (path, Page) => {
+    seed(); window.history.replaceState(null, '', path);
+    render(<BitePickLayout><Page /></BitePickLayout>);
+    expect(screen.getByRole('main')).not.toBeEmptyDOMElement();
+    if (path === '/') expect(screen.getByRole('button', { name: 'Pick for Me!' })).toBeInTheDocument();
+    else expect(screen.getAllByRole('link').some(link => link.getAttribute('href') === path && link.getAttribute('aria-current') === 'page')).toBe(true);
+  });
+  it('opens settings from the animation preferences shortcut', async () => {
+    seed(); const user = userEvent.setup(); render(<AppShell />);
+    await user.click(screen.getByRole('button', { name: 'Animation preferences' }));
+    expect(window.location.pathname).toBe('/settings');
+    expect(screen.getByRole('heading', { name: 'Appearance' })).toBeInTheDocument();
+  });
+  it.each([
+    ['/foods', 'My food list'], ['/history', 'Pick history'], ['/settings', 'Settings'],
+  ])('opens %s directly and preserves the page on remount', (path, label) => {
+    seed(); window.history.replaceState(null, '', path);
+    const app = render(<AppShell />);
+    expect(screen.getAllByRole('link', { name: label })[0]).toHaveAttribute('aria-current', 'page');
+    expect(screen.queryByRole('button', { name: 'Pick for Me!' })).not.toBeInTheDocument();
+    app.unmount(); render(<AppShell />);
+    expect(screen.getAllByRole('link', { name: label })[0]).toHaveAttribute('aria-current', 'page');
+  });
+  it('updates the URL and responds to browser history without losing local changes', async () => {
+    seed(); const user = userEvent.setup(); render(<AppShell />);
+    await openView('My food list', user);
+    expect(window.location.pathname).toBe('/foods');
+    await user.type(screen.getByLabelText('Quick add food name'), 'Weekend noodles');
+    await user.click(screen.getByRole('button', { name: 'Add' }));
+    await openView('Settings', user);
+    expect(window.location.pathname).toBe('/settings');
+    await act(async () => { window.history.back(); await new Promise(resolve => window.addEventListener('popstate', resolve, { once: true })); });
+    expect(window.location.pathname).toBe('/foods');
+    expect(screen.getByRole('heading', { name: 'Weekend noodles' })).toBeInTheDocument();
+    await act(async () => { window.history.forward(); await new Promise(resolve => window.addEventListener('popstate', resolve, { once: true })); });
+    expect(window.location.pathname).toBe('/settings');
+    expect(screen.getByRole('heading', { name: 'Appearance' })).toBeInTheDocument();
   });
 });

@@ -7,10 +7,15 @@ describe('data persistence', () => {
     expect(warning).toBeUndefined(); expect(data.foods).toHaveLength(11); expect(data.categories).toContain('Asian');
   });
   it('round-trips all data including settings, custom foods, disabled state and history', () => {
-    const data = defaultData(); data.foods[0].enabled = false; data.settings.theme = 'dark'; data.settings.avoidRecent = 3; data.settings.reducedMotion = true;
+    const data = defaultData(); data.foods[0].enabled = false; data.settings.avoidRecent = 3; data.settings.reducedMotion = true;
     data.categories.push('Date night'); data.foods.push({ ...data.foods[1], id: 'custom', name: 'Dumplings', category: 'Date night' });
     data.history.push({ id: 'h1', foodId: 'custom', name: 'Dumplings', emoji: '🥟', category: 'Date night', pickedAt: '2026-10-28T10:00:00.000Z' });
     expect(parseData(exportData(data))).toEqual(data);
+  });
+  it.each(['light', 'dark'])('preserves a saved %s appearance without changing the menu', theme => {
+    const data = defaultData();
+    const parsed = parseData(JSON.stringify({ ...data, settings: { ...data.settings, theme } }));
+    expect(parsed.settings.theme).toBe(theme); expect(parsed.foods).toEqual(data.foods);
   });
   it('allows an intentionally empty menu and categories', () => {
     expect(parseData(JSON.stringify({ ...defaultData(), foods: [], categories: [] })).foods).toEqual([]);

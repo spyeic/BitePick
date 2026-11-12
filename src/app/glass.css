@@ -46,16 +46,15 @@ body::before {
   background:
     radial-gradient(38vmax 34vmax at 18% 22%, var(--blob-a), transparent 70%),
     radial-gradient(34vmax 30vmax at 82% 18%, var(--blob-d), transparent 70%);
-  opacity: .85; animation: glass-drift 28s ease-in-out infinite alternate;
+  opacity: .85;
 }
 body::after {
   background:
     radial-gradient(36vmax 32vmax at 75% 82%, var(--blob-c), transparent 70%),
     radial-gradient(30vmax 28vmax at 28% 78%, var(--blob-b), transparent 70%);
-  opacity: .8; animation: glass-drift 34s ease-in-out infinite alternate-reverse;
+  opacity: .8;
 }
 :root[data-theme="dark"] body::before, :root[data-theme="dark"] body::after { opacity: .7; }
-@keyframes glass-drift { from { transform: translate3d(-3%, -2%, 0) scale(1); } to { transform: translate3d(3%, 3%, 0) scale(1.08); } }
 
 /* Glass surfaces */
 :root .sidebar, :root .decision-card, :root .recent-card, :root .food-card, :root .quick-add-bar,
@@ -139,11 +138,11 @@ body::after {
 .glass-select-check { display: inline-flex; }
 
 /* Navigation pills: the active highlight is a GlassPill that springs between buttons. */
-:root .main-nav > button { border-radius: 14px; }
+:root .main-nav > a { border-radius: 14px; }
 :root .mode-switch, :root[data-theme="dark"] .mode-switch { background: var(--surface-soft); border-radius: 14px; box-shadow: inset 0 1px 3px rgba(122, 70, 40, .1), inset 0 -1px 0 var(--glass-edge); }
 :root .mode-switch button { border-radius: 11px; }
-:root .main-nav > button, :root .mobile-nav > button, :root .mode-switch button, :root .category-tabs > button { position: relative; isolation: isolate; }
-:root .main-nav > button.active, :root .mobile-nav > button.active, :root .mode-switch button.active, :root .category-tabs > button.active { background: transparent; box-shadow: none; border-color: transparent; }
+:root .main-nav > a, :root .mobile-nav > a, :root .mode-switch button, :root .category-tabs > button { position: relative; isolation: isolate; }
+:root .main-nav > a.active, :root .mobile-nav > a.active, :root .mode-switch button.active, :root .category-tabs > button.active { background: transparent; box-shadow: none; border-color: transparent; }
 .glass-pill {
   position: absolute; inset: 0; z-index: -1; pointer-events: none;
   background: linear-gradient(140deg, var(--glass-strong), var(--accent-soft));
@@ -170,16 +169,13 @@ body::after {
 :root .button-secondary:hover:not(:disabled) { background: var(--surface-hover); border-color: var(--glass-border); }
 :root .brand-mark { background: linear-gradient(160deg, #f6a07a, #dc6238); box-shadow: 0 6px 16px rgba(220, 98, 56, .3), inset 0 1px 0 rgba(255, 255, 255, .55); }
 
-/* Emoji bubbles */
-:root .food-emoji, :root .food-card-emoji, :root .result-emoji {
-  background: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, .9), rgba(255, 255, 255, .35) 70%);
-  box-shadow: 0 4px 12px rgba(122, 70, 40, .1), inset 0 1px 0 #fff, inset 0 -2px 6px rgba(122, 70, 40, .06);
-}
+/* Keep food icons unadorned; glass belongs to the interactive surfaces. */
+:root .food-emoji, :root .food-card-emoji, :root .result-emoji,
 :root[data-theme="dark"] .food-emoji, :root[data-theme="dark"] .food-card-emoji, :root[data-theme="dark"] .result-emoji {
-  background: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, .2), rgba(255, 255, 255, .05) 70%);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, .25), inset 0 1px 0 rgba(255, 255, 255, .2);
+  background: transparent; box-shadow: none;
 }
 :root .food-emoji { border-radius: 14px; }
+:root .brand-mark { transform: none; }
 
 .mobile-nav-dock { display: none; }
 /* On phones the sidebar is just the brand row over the top bar. */
@@ -198,7 +194,7 @@ body::after {
     box-shadow: 0 14px 40px rgba(122, 70, 40, .2), 0 2px 8px rgba(122, 70, 40, .08), inset 0 1px 0 var(--glass-edge), inset 0 -1px 0 rgba(255, 255, 255, .12);
   }
   :root[data-theme="dark"] .mobile-nav { box-shadow: 0 14px 40px rgba(0, 0, 0, .45), inset 0 1px 0 var(--glass-edge); }
-  :root .mobile-nav > button { flex: 1; min-width: 0; border-radius: 20px; padding: 8px 4px; }
+  :root .mobile-nav > a { flex: 1; min-width: 0; border-radius: 20px; padding: 8px 4px; }
   :root .bite-toast { margin-bottom: calc(84px + env(safe-area-inset-bottom)) !important; }
   /* Fade the color fields out before the bottom edge, so whatever iOS paints under its toolbar matches the page. */
   body::before, body::after {
@@ -246,3 +242,44 @@ body::after {
   :root { --glass: rgba(255, 255, 255, .82); --glass-strong: rgba(255, 255, 255, .92); }
   :root[data-theme="dark"] { --glass: rgba(34, 36, 46, .9); --glass-strong: rgba(44, 46, 58, .94); }
 }
+
+/* Opaque peach and champagne sectors match the page's warm palette. */
+:root {
+  --wheel-peach: #f3dccd;
+  --wheel-cream: #f8e9d2;
+  --wheel-blush: #f0ddd5;
+  --wheel-base: #f9eddf;
+  --wheel-separator: #fff5e9;
+  --wheel-center: #faeedb;
+  --wheel-shadow: rgba(151, 100, 65, .08);
+}
+:root[data-theme="dark"] {
+  --wheel-peach: #4c403a;
+  --wheel-cream: #4b453b;
+  --wheel-blush: #4b3e3d;
+  --wheel-base: #322c2a;
+  --wheel-separator: #675850;
+  --wheel-center: #302a28;
+  --wheel-shadow: rgba(0, 0, 0, .18);
+}
+:root .wheel-rim {
+  background: var(--wheel-base);
+  border-color: var(--wheel-separator);
+  box-shadow: 0 6px 20px var(--wheel-shadow);
+  -webkit-backdrop-filter: none; backdrop-filter: none;
+}
+:root .wheel-hub { color: var(--muted); }
+:root .wheel-label { fill: var(--ink); }
+:root .hero h1 em, :root .page-heading h1 em { color: var(--ink); }
+.theme-switch { display: inline-flex; flex-shrink: 0; gap: 3px; padding: 4px; border: 1px solid var(--glass-border); border-radius: 13px; background: var(--surface-soft); }
+.theme-switch > button { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 9px 12px; border-radius: 9px; color: var(--muted); font-size: 12px; }
+.theme-switch > button:hover:not(:disabled) { background: var(--surface-hover); color: var(--ink); }
+.theme-switch > button[aria-pressed="true"] { color: var(--accent); background: var(--glass-strong); box-shadow: 0 2px 8px rgba(60, 40, 20, .08), inset 0 1px 0 var(--glass-edge); }
+.theme-switch-compact { padding: 3px; gap: 2px; }
+.theme-switch-compact > button { padding: 6px 8px; font-size: 10px; min-height: 30px; }
+:root .appearance-setting { padding: 0; border: 0; }
+@media (max-width: 980px) { .theme-switch-compact > button { padding: 6px; min-width: 28px; }.theme-switch-compact > button > span { display: none; } }
+@media (max-width: 420px) { .appearance-setting { align-items: flex-start; flex-direction: column; }.appearance-setting .theme-switch { width: 100%; }.appearance-setting .theme-switch > button { flex: 1; } }
+
+/* Route links retain disabled feedback while a pick is in progress. */
+:root a[aria-disabled="true"] { cursor: not-allowed; opacity: .5; }

@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 };
 // `cover` lets the page run under the status bar and browser toolbar; safe-area insets keep controls clear of them.
 export const viewport: Viewport = { width: 'device-width', initialScale: 1, viewportFit: 'cover' };
-const themeScript = `(function(){try{var d=JSON.parse(localStorage.getItem('bitepick.v2')||localStorage.getItem('bitepick.v1')||'null');document.documentElement.lang=d?.settings?.language==='en'?'en-US':'zh-CN';var t=d?.settings?.theme||'system';document.documentElement.dataset.theme=t==='dark'||(t==='system'&&matchMedia('(prefers-color-scheme:dark)').matches)?'dark':'light';if(d?.settings?.reducedMotion)document.documentElement.dataset.motion='reduced'}catch(e){}})()`;
+const themeScript = `(function(){document.documentElement.dataset.theme=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';try{var d=JSON.parse(localStorage.getItem('bitepick.v2')||localStorage.getItem('bitepick.v1')||'null');var t=d?.settings?.theme;if(t==='light'||t==='dark')document.documentElement.dataset.theme=t;document.documentElement.lang=d?.settings?.language==='en'?'en-US':'zh-CN';if(d?.settings?.reducedMotion)document.documentElement.dataset.motion='reduced'}catch(e){}})()`;
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return <html lang="zh-CN" suppressHydrationWarning><head><script dangerouslySetInnerHTML={{ __html: themeScript }} /></head><body>{children}</body></html>;
 }
